@@ -1,11 +1,10 @@
-```css
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    background: #090b10;
+    background: #080a10;
     color: #e8eaf2;
     font-family: Arial, sans-serif;
 }
@@ -19,6 +18,7 @@ body {
 header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid #252a38;
     padding-bottom: 20px;
 }
@@ -29,7 +29,7 @@ header {
     letter-spacing: 2px;
 }
 
-.logo span {
+.logo span, h1 span {
     color: #9875ff;
 }
 
@@ -44,6 +44,7 @@ header {
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    margin-right: 5px;
 }
 
 .hero {
@@ -59,10 +60,6 @@ header {
 h1 {
     font-size: 55px;
     margin: 12px 0;
-}
-
-h1 span {
-    color: #9875ff;
 }
 
 .hero p:last-child {
@@ -120,10 +117,12 @@ button {
     color: white;
     font-weight: bold;
     cursor: pointer;
+    transition: .2s;
 }
 
 button:hover {
     background: #8058ef;
+    transform: translateY(-1px);
 }
 
 button:disabled {
@@ -132,8 +131,8 @@ button:disabled {
 }
 
 #result {
-    color: #83d9a4;
     font-size: 13px;
+    color: #83d9a4;
 }
 
 .stat {
@@ -154,4 +153,9 @@ footer {
     font-size: 11px;
     padding: 30px;
 }
-```
+
+@media(max-width:600px) {
+    .app { padding: 18px; }
+    h1 { font-size: 42px; }
+    header { gap: 15px; }
+}

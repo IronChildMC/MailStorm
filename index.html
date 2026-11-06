@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,6 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MailStorm</title>
 <link rel="stylesheet" href="style.css">
+<style>
+[hidden] { display: none !important; }
+.login-panel { max-width: 480px; margin: 40px auto; }
+#logout { margin-top: 15px; }
+</style>
 </head>
 <body>
 <div class="app">
@@ -17,41 +23,59 @@
         <section class="hero">
             <p class="tag">EMAIL CONTROL SYSTEM / V1.0</p>
             <h1>MailStorm<span>.</span></h1>
-            <p>Advanced email control interface.</p>
+            <p>Private email control interface.</p>
         </section>
 
-        <section class="panel">
-            <h2>Compose message</h2>
-            <form id="mailForm">
-                <label>RECIPIENT</label>
-                <input id="to" type="email" placeholder="correo@ejemplo.com" required>
+        <section class="panel login-panel" id="loginPanel">
+            <h2>Private access</h2>
+            <form id="loginForm">
+                <label>USERNAME</label>
+                <input id="username" autocomplete="username"
+                       placeholder="Usuario" required>
 
-                <label>SUBJECT</label>
-                <input id="subject" maxlength="150" placeholder="Asunto" required>
+                <label>PASSWORD</label>
+                <input id="password" type="password"
+                       autocomplete="current-password"
+                       placeholder="Contraseña" required>
 
-                <label>MESSAGE</label>
-                <textarea id="message" maxlength="10000" rows="8"
-                placeholder="Escribe tu mensaje..." required></textarea>
-
-                <button id="send" type="submit">SEND MESSAGE</button>
+                <button id="loginButton" type="submit">SIGN IN</button>
             </form>
-            <p id="result"></p>
+            <p id="loginResult" role="status"></p>
         </section>
 
-        <section class="panel">
-            <h2>System statistics</h2>
-            <div class="stat">
-                <span>Messages sent</span>
-                <strong id="sent">0</strong>
-            </div>
-            <div class="stat">
-                <span>Errors</span>
-                <strong id="errors">0</strong>
-            </div>
-        </section>
+        <div id="privateArea" hidden>
+            <section class="panel">
+                <h2>Compose message</h2>
+                <form id="mailForm">
+                    <label>SUBJECT</label>
+                    <input id="subject" maxlength="150"
+                           placeholder="Asunto" required>
+
+                    <label>MESSAGE</label>
+                    <textarea id="message" maxlength="5000" rows="8"
+                    placeholder="Escribe tu mensaje..." required></textarea>
+
+                    <button id="send" type="submit">SEND MESSAGE</button>
+                </form>
+                <p id="result" role="status"></p>
+                <button id="logout" type="button">SIGN OUT</button>
+            </section>
+
+            <section class="panel">
+                <h2>System statistics</h2>
+                <div class="stat">
+                    <span>Messages sent</span>
+                    <strong id="sent">0</strong>
+                </div>
+                <div class="stat">
+                    <span>Errors</span>
+                    <strong id="errors">0</strong>
+                </div>
+            </section>
+        </div>
     </main>
 
-    <footer>MAILSTORM // EMAIL CONTROL SYSTEM</footer>
+    <footer>MAILSTORM // PRIVATE EMAIL CONTROL SYSTEM</footer>
 </div>
 <script src="script.js"></script>
 </body>

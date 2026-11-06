@@ -1,101 +1,86 @@
+
 const express = require("express");
-const { Resend } = require("resend");
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 const ORIGIN = "https://ironchildmc.github.io";
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", ORIGIN);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, X-MailStorm-Key"
-    );
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    if (req.method === "OPTIONS") {
-        return res.sendStatus(204);
-    }
-
+    if (req.method === "OPTIONS") return res.sendStatus(204);
     next();
 });
 
-app.use(express.json({ limit: "20kb" }));
+app.use(express.json({ limit: "10kb" }));
+
+app.use(session({
+    name: "mailstorm_session",
+    secret: process.env.MAILSTORM_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 30 * 60 * 1000
+    }
+}));
+
+let attempts = new Map();
 
 app.get("/", (req, res) => {
     res.send("MailStorm API online");
 });
 
-app.post("/api/send", async (req, res) => {
-    try {
-        const secret = process.env.MAILSTORM_SECRET;
-        const supplied = req.headers["x-mailstorm-key"];
+app.post("/api/login", async (req, res) => {
+    const ip = req.ip;
+    const now = Date.now();
+    const record = attempts.get(ip) || { count: 0, time: now };
 
-        if (
-            !secret ||
-            typeof supplied !== "string" ||
-            Buffer.byteLength(secret) !== Buffer.byteLength(supplied) ||
-            !crypto.timingSafeEqual(
-                Buffer.from(secret),
-                Buffer.from(supplied)
-            )
-        ) {
-            return res.status(401).json({
-                error: "Acceso no autorizado"
-            });
-        }
-
-        const { to, subject, message } = req.body;
-
-        if (
-            typeof to !== "string" ||
-            typeof subject !== "string" ||
-            typeof message !== "string" ||
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) ||
-            !subject.trim() ||
-            !message.trim() ||
-            subject.length > 150 ||
-            message.length > 10000
-        ) {
-            return res.status(400).json({
-                error: "Datos no válidos"
-            });
-        }
-
-        if (!process.env.RESEND_API_KEY || !process.env.FROM_EMAIL) {
-            return res.status(503).json({
-                error: "Resend no está configurado"
-            });
-        }
-
-        const resend = new Resend(process.env.RESEND_API_KEY);
-
-        const result = await resend.emails.send({
-            from: process.env.FROM_EMAIL,
-            to: [to],
-            subject,
-            text: message
-        });
-
-        if (result.error) {
-            return res.status(502).json({
-                error: "Error de Resend"
-            });
-        }
-
-        res.json({
-            success: true,
-            id: result.data.id
-        });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: "Error interno"
-        });
+    if (now - record.time > 15 * 60 * 1000) {
+        record.count = 0;
+        record.time = now;
     }
+
+    if (record.count >= 5) {
+        return res.status(429).json({ error: "Demasiados intentos. Espera 15 minutos." });
+    }
+
+    const { username, password } = req.body || {};
+
+    const validUser = username === process.env.MAILSTORM_USER;
+    const validPassword = typeof password === "string" &&
+        password === process.env.MAILSTORM_PASSWORD;
+
+    if (!validUser || !validPassword) {
+        record.count++;
+        attempts.set(ip, record);
+        return res.status(401).json({ error: "Credenciales incorrectas." });
+    }
+
+    attempts.delete(ip);
+
+    req.session.authenticated = true;
+
+    res.json({ success: true });
+});
+
+app.get("/api/session", (req, res) => {
+    res.json({ authenticated: req.session.authenticated === true });
+});
+
+app.post("/api/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.clearCookie("mailstorm_session");
+        res.json({ success: true });
+    });
 });
 
 app.listen(PORT, () => {

@@ -1,0 +1,157 @@
+```css
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #090b10;
+    color: #e8eaf2;
+    font-family: Arial, sans-serif;
+}
+
+.app {
+    max-width: 1000px;
+    margin: auto;
+    padding: 30px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #252a38;
+    padding-bottom: 20px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.logo span {
+    color: #9875ff;
+}
+
+.status {
+    color: #83d9a4;
+    font-size: 12px;
+}
+
+.status i {
+    display: inline-block;
+    background: #83d9a4;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.hero {
+    padding: 65px 0 35px;
+}
+
+.tag {
+    color: #9875ff;
+    letter-spacing: 3px;
+    font-size: 11px;
+}
+
+h1 {
+    font-size: 55px;
+    margin: 12px 0;
+}
+
+h1 span {
+    color: #9875ff;
+}
+
+.hero p:last-child {
+    color: #8c93a5;
+}
+
+.panel {
+    background: #121620;
+    border: 1px solid #292f40;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 22px;
+}
+
+.panel h2 {
+    font-size: 17px;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    color: #999fb2;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin: 20px 0 9px;
+}
+
+input, textarea {
+    width: 100%;
+    background: #090d15;
+    color: white;
+    border: 1px solid #30384a;
+    padding: 14px;
+    border-radius: 7px;
+    outline: none;
+    font: inherit;
+}
+
+input:focus, textarea:focus {
+    border-color: #9875ff;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    margin-top: 22px;
+    background: #9875ff;
+    border: 0;
+    border-radius: 7px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #8058ef;
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: wait;
+}
+
+#result {
+    color: #83d9a4;
+    font-size: 13px;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-top: 1px solid #292f40;
+    color: #9ba3b7;
+}
+
+.stat strong {
+    color: #9875ff;
+}
+
+footer {
+    text-align: center;
+    color: #555e72;
+    font-size: 11px;
+    padding: 30px;
+}
+```

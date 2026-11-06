@@ -4,29 +4,16 @@ const crypto = require("crypto");
 
 const app = express();
 
-app.use(express.json({ limit: "20kb" }));
-
 const PORT = process.env.PORT || 3000;
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const API_SECRET = process.env.MAILSTORM_SECRET;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
-const FROM_EMAIL = process.env.FROM_EMAIL;
-
-const lastRequests = new Map();
+const ORIGIN = "https://ironchildmc.github.io";
 
 app.use((req, res, next) => {
-    const origin = req.headers.origin;
-
-    if (origin && origin !== ALLOWED_ORIGIN) {
-        return res.status(403).json({
-            error: "Origen no autorizado"
-        });
-    }
-
-    res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+    res.setHeader("Access-Control-Allow-Origin", ORIGIN);
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-MailStorm-Key");
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, X-MailStorm-Key"
+    );
 
     if (req.method === "OPTIONS") {
         return res.sendStatus(204);
@@ -35,26 +22,24 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(express.json({ limit: "20kb" }));
+
 app.get("/", (req, res) => {
     res.send("MailStorm API online");
 });
 
 app.post("/api/send", async (req, res) => {
     try {
-        if (!API_SECRET || !process.env.RESEND_API_KEY || !FROM_EMAIL) {
-            return res.status(503).json({
-                error: "Servidor sin configurar"
-            });
-        }
-
+        const secret = process.env.MAILSTORM_SECRET;
         const supplied = req.headers["x-mailstorm-key"];
 
         if (
+            !secret ||
             typeof supplied !== "string" ||
-            supplied.length !== API_SECRET.length ||
+            Buffer.byteLength(secret) !== Buffer.byteLength(supplied) ||
             !crypto.timingSafeEqual(
-                Buffer.from(supplied),
-                Buffer.from(API_SECRET)
+                Buffer.from(secret),
+                Buffer.from(supplied)
             )
         ) {
             return res.status(401).json({
@@ -68,33 +53,29 @@ app.post("/api/send", async (req, res) => {
             typeof to !== "string" ||
             typeof subject !== "string" ||
             typeof message !== "string" ||
-            to.length > 254 ||
-            subject.length > 150 ||
-            message.length > 10000 ||
             !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) ||
             !subject.trim() ||
-            !message.trim()
+            !message.trim() ||
+            subject.length > 150 ||
+            message.length > 10000
         ) {
             return res.status(400).json({
                 error: "Datos no válidos"
             });
         }
 
-        const now = Date.now();
-        const previous = lastRequests.get(supplied) || 0;
-
-        if (now - previous < 60000) {
-            return res.status(429).json({
-                error: "Espera antes de enviar otro mensaje"
+        if (!process.env.RESEND_API_KEY || !process.env.FROM_EMAIL) {
+            return res.status(503).json({
+                error: "Resend no está configurado"
             });
         }
 
-        lastRequests.set(supplied, now);
+        const resend = new Resend(process.env.RESEND_API_KEY);
 
         const result = await resend.emails.send({
-            from: FROM_EMAIL,
+            from: process.env.FROM_EMAIL,
             to: [to],
-            subject: subject,
+            subject,
             text: message
         });
 
@@ -104,20 +85,19 @@ app.post("/api/send", async (req, res) => {
             });
         }
 
-        return res.json({
+        res.json({
             success: true,
             id: result.data.id
         });
 
     } catch (error) {
         console.error(error);
-
-        return res.status(500).json({
+        res.status(500).json({
             error: "Error interno"
         });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`MailStorm running on port ${PORT}`);
+    console.log("MailStorm API running on port " + PORT);
 });

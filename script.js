@@ -1,3 +1,5 @@
+const API_URL = "https://mailstorm-m1vc.onrender.com/api/send";
+
 const form = document.getElementById("mailForm");
 const button = document.getElementById("send");
 const result = document.getElementById("result");
@@ -9,7 +11,7 @@ form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     button.disabled = true;
-    result.textContent = "Procesando mensaje...";
+    result.textContent = "Sending message...";
 
     try {
         const response = await fetch(API_URL, {
@@ -27,18 +29,20 @@ form.addEventListener("submit", async (event) => {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || "No se pudo enviar");
+            throw new Error(data.error || "Sending failed");
         }
 
         sent++;
         document.getElementById("sent").textContent = sent;
-        result.textContent = "Correo enviado correctamente.";
+        result.textContent = "Message sent successfully.";
 
         form.reset();
+
     } catch (error) {
         errors++;
         document.getElementById("errors").textContent = errors;
         result.textContent = "Error: " + error.message;
+
     } finally {
         button.disabled = false;
     }

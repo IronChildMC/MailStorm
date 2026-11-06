@@ -2,15 +2,14 @@
 {
   "name": "mailstorm",
   "version": "1.0.0",
-  "description": "MailStorm email application",
+  "description": "MailStorm private email application",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "resend": "^6.0.0"
-    "bcryptjs": "^2.4.3",
-    "express-session": "^1.18.1"
   }
 }

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,42 +15,42 @@
 
     <main>
         <section class="hero">
-            <p class="tag">EMAIL CONTROL SYSTEM</p>
+            <p class="tag">EMAIL CONTROL SYSTEM / V1.0</p>
             <h1>MailStorm<span>.</span></h1>
-            <p>Control centralizado de correo electrónico.</p>
+            <p>Advanced email control interface.</p>
         </section>
 
         <section class="panel">
-            <h2>Nuevo mensaje</h2>
-
+            <h2>Compose message</h2>
             <form id="mailForm">
-                <label>DESTINATARIO</label>
+                <label>RECIPIENT</label>
                 <input id="to" type="email" placeholder="correo@ejemplo.com" required>
 
-                <label>ASUNTO</label>
-                <input id="subject" maxlength="150" required>
+                <label>SUBJECT</label>
+                <input id="subject" maxlength="150" placeholder="Asunto" required>
 
-                <label>MENSAJE</label>
-                <textarea id="message" maxlength="10000" rows="8" required></textarea>
+                <label>MESSAGE</label>
+                <textarea id="message" maxlength="10000" rows="8"
+                placeholder="Escribe tu mensaje..." required></textarea>
 
-                <button type="submit" id="send">ENVIAR CORREO</button>
+                <button id="send" type="submit">SEND MESSAGE</button>
             </form>
-
             <p id="result"></p>
         </section>
 
-        <section class="panel stats">
-            <h2>Estadísticas</h2>
+        <section class="panel">
+            <h2>System statistics</h2>
             <div class="stat">
-                <span>Mensajes enviados</span>
+                <span>Messages sent</span>
                 <strong id="sent">0</strong>
             </div>
             <div class="stat">
-                <span>Errores</span>
+                <span>Errors</span>
                 <strong id="errors">0</strong>
             </div>
         </section>
     </main>
+
     <footer>MAILSTORM // EMAIL CONTROL SYSTEM</footer>
 </div>
 <script src="script.js"></script>

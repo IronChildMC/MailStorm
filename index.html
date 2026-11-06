@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MailStorm</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+    <header>
+        <div class="logo">MAIL<span>STORM</span></div>
+        <div class="status"><i></i> SYSTEM ONLINE</div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <p class="tag">EMAIL CONTROL SYSTEM</p>
+            <h1>MailStorm<span>.</span></h1>
+            <p>Control centralizado de correo electrónico.</p>
+        </section>
+
+        <section class="panel">
+            <h2>Nuevo mensaje</h2>
+
+            <form id="mailForm">
+                <label>DESTINATARIO</label>
+                <input id="to" type="email" placeholder="correo@ejemplo.com" required>
+
+                <label>ASUNTO</label>
+                <input id="subject" maxlength="150" required>
+
+                <label>MENSAJE</label>
+                <textarea id="message" maxlength="10000" rows="8" required></textarea>
+
+                <button type="submit" id="send">ENVIAR CORREO</button>
+            </form>
+
+            <p id="result"></p>
+        </section>
+
+        <section class="panel stats">
+            <h2>Estadísticas</h2>
+            <div class="stat">
+                <span>Mensajes enviados</span>
+                <strong id="sent">0</strong>
+            </div>
+            <div class="stat">
+                <span>Errores</span>
+                <strong id="errors">0</strong>
+            </div>
+        </section>
+    </main>
+    <footer>MAILSTORM // EMAIL CONTROL SYSTEM</footer>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

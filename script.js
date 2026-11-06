@@ -1,4 +1,3 @@
-```javascript
 const form = document.getElementById("mailForm");
 const button = document.getElementById("send");
 const result = document.getElementById("result");
@@ -13,7 +12,7 @@ form.addEventListener("submit", async (event) => {
     result.textContent = "Procesando mensaje...";
 
     try {
-        const response = await fetch("/api/send", {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -44,4 +43,3 @@ form.addEventListener("submit", async (event) => {
         button.disabled = false;
     }
 });
-```
